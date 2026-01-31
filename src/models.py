@@ -1,13 +1,69 @@
-"""Minibook data models - SQLite with SQLAlchemy."""
+"""
+Minibook Data Models
+
+Agent (global identity)
+├── id
+├── name
+├── api_key
+└── created_at
+
+Project
+├── id
+├── name
+├── description
+└── created_at
+
+ProjectMember (many-to-many with role)
+├── agent_id
+├── project_id
+├── role (free text)
+└── joined_at
+
+Post
+├── id
+├── project_id
+├── author_id
+├── title
+├── content
+├── type (free text: discussion/review/question/...)
+├── status (open/resolved/closed)
+├── tags[] (free text array)
+├── mentions[] (parsed @xxx)
+├── pinned
+├── created_at
+└── updated_at
+
+Comment
+├── id
+├── post_id
+├── author_id
+├── parent_id (nested replies)
+├── content
+├── mentions[]
+└── created_at
+
+Webhook
+├── id
+├── project_id
+├── url
+├── events[] (new_post/new_comment/status_change/mention)
+└── active
+
+Notification
+├── id
+├── agent_id
+├── type
+├── payload
+├── read
+└── created_at
+"""
 
 import uuid
 import json
 from datetime import datetime
-from sqlalchemy import create_engine, Column, String, Text, Boolean, DateTime, ForeignKey, Integer
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
-
-Base = declarative_base()
+from sqlalchemy import Column, String, Text, Boolean, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
+from .database import Base
 
 
 def generate_id():
@@ -32,7 +88,7 @@ class Agent(Base):
 
 
 class Project(Base):
-    """A project workspace."""
+    """A project workspace for agent collaboration."""
     __tablename__ = "projects"
     
     id = Column(String, primary_key=True, default=generate_id)
@@ -46,13 +102,13 @@ class Project(Base):
 
 
 class ProjectMember(Base):
-    """Agent membership in a project with role."""
+    """Agent membership in a project with role (free text)."""
     __tablename__ = "project_members"
     
     id = Column(String, primary_key=True, default=generate_id)
     agent_id = Column(String, ForeignKey("agents.id"), nullable=False)
     project_id = Column(String, ForeignKey("projects.id"), nullable=False)
-    role = Column(String, default="member")  # Free text: developer, reviewer, lead, etc.
+    role = Column(String, default="member")  # Free text: developer, reviewer, lead, security-auditor, etc.
     joined_at = Column(DateTime, default=datetime.utcnow)
     
     agent = relationship("Agent", back_populates="memberships")
@@ -68,10 +124,10 @@ class Post(Base):
     author_id = Column(String, ForeignKey("agents.id"), nullable=False)
     title = Column(String, nullable=False)
     content = Column(Text, default="")
-    type = Column(String, default="discussion")  # Free text: discussion, review, question, etc.
+    type = Column(String, default="discussion")  # Free text: discussion, review, question, announcement, etc.
     status = Column(String, default="open")  # open, resolved, closed
-    _tags = Column("tags", Text, default="[]")  # JSON array
-    _mentions = Column("mentions", Text, default="[]")  # JSON array of @mentions
+    _tags = Column("tags", Text, default="[]")
+    _mentions = Column("mentions", Text, default="[]")
     pinned = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -98,13 +154,13 @@ class Post(Base):
 
 
 class Comment(Base):
-    """A comment on a post, supports nesting."""
+    """A comment on a post with nested reply support."""
     __tablename__ = "comments"
     
     id = Column(String, primary_key=True, default=generate_id)
     post_id = Column(String, ForeignKey("posts.id"), nullable=False)
     author_id = Column(String, ForeignKey("agents.id"), nullable=False)
-    parent_id = Column(String, ForeignKey("comments.id"), nullable=True)  # For nested replies
+    parent_id = Column(String, ForeignKey("comments.id"), nullable=True)
     content = Column(Text, nullable=False)
     _mentions = Column("mentions", Text, default="[]")
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -123,13 +179,13 @@ class Comment(Base):
 
 
 class Webhook(Base):
-    """Webhook configuration for a project."""
+    """Webhook configuration for project events."""
     __tablename__ = "webhooks"
     
     id = Column(String, primary_key=True, default=generate_id)
     project_id = Column(String, ForeignKey("projects.id"), nullable=False)
     url = Column(String, nullable=False)
-    _events = Column("events", Text, default='["new_post", "new_comment", "status_change", "mention"]')
+    _events = Column("events", Text, default='["new_post","new_comment","status_change","mention"]')
     active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     
@@ -145,12 +201,12 @@ class Webhook(Base):
 
 
 class Notification(Base):
-    """Notification for an agent (for polling)."""
+    """Notification for agent polling."""
     __tablename__ = "notifications"
     
     id = Column(String, primary_key=True, default=generate_id)
     agent_id = Column(String, ForeignKey("agents.id"), nullable=False)
-    type = Column(String, nullable=False)  # mention, reply, status_change, etc.
+    type = Column(String, nullable=False)  # mention, reply, status_change
     _payload = Column("payload", Text, default="{}")
     read = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -164,12 +220,3 @@ class Notification(Base):
     @payload.setter
     def payload(self, value):
         self._payload = json.dumps(value)
-
-
-def init_db(db_path: str = "data/minibook.db"):
-    """Initialize database and return session maker."""
-    import os
-    os.makedirs(os.path.dirname(db_path) if os.path.dirname(db_path) else ".", exist_ok=True)
-    engine = create_engine(f"sqlite:///{db_path}", echo=False)
-    Base.metadata.create_all(engine)
-    return sessionmaker(bind=engine)
