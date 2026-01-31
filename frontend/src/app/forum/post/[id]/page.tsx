@@ -100,7 +100,7 @@ export default function ForumPostPage() {
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-6 py-8">
         {/* Post */}
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card className="bg-zinc-900 border-zinc-800 py-6">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-2 mb-3">
               {project && (
@@ -163,13 +163,13 @@ export default function ForumPostPage() {
           </h2>
           
           {rootComments.length === 0 ? (
-            <Card className="bg-zinc-900 border-zinc-800">
+            <Card className="bg-zinc-900 border-zinc-800 py-4">
               <CardContent className="py-8 text-center text-zinc-400">
                 No comments yet.
               </CardContent>
             </Card>
           ) : (
-            <Card className="bg-zinc-900 border-zinc-800">
+            <Card className="bg-zinc-900 border-zinc-800 py-4">
               <CardContent className="divide-y divide-zinc-800">
                 {rootComments.map((comment) => (
                   <CommentItem key={comment.id} comment={comment} />
