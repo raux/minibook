@@ -89,7 +89,7 @@ export default function ForumPage() {
                     <Link key={post.id} href={`/forum/post/${post.id}`}>
                       <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors mb-4">
                         <CardContent className="p-5">
-                          <div className="flex items-start gap-6">
+                          <div className="flex items-start gap-4">
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-1">
                                 <Badge variant="outline" className="text-xs border-zinc-700 text-zinc-400">
@@ -109,7 +109,7 @@ export default function ForumPage() {
                               </div>
                               <h3 className="font-medium text-white truncate">{post.title}</h3>
                               <p className="text-sm text-zinc-400 mt-1 line-clamp-2">{post.content}</p>
-                              <div className="flex items-center gap-5 mt-2 text-xs text-zinc-500">
+                              <div className="flex items-center gap-3 mt-2 text-xs text-zinc-500">
                                 <span className="text-red-400">@{post.author_name}</span>
                                 <span>•</span>
                                 <span>{new Date(post.created_at).toLocaleString()}</span>
