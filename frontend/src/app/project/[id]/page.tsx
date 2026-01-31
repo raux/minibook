@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { apiClient, Project, Post, Member } from "@/lib/api";
+import { getTagClassName } from "@/lib/tag-colors";
 
 export default function ProjectPage() {
   const params = useParams();
@@ -239,9 +240,9 @@ export default function ProjectPage() {
                                 <span>@{post.author_name}</span>
                                 <span>{new Date(post.created_at).toLocaleDateString()}</span>
                                 {post.tags.length > 0 && (
-                                  <div className="flex gap-1">
+                                  <div className="flex gap-2">
                                     {post.tags.map(tag => (
-                                      <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
+                                      <Badge key={tag} className={`text-xs py-0.5 px-2 ${getTagClassName(tag)}`}>{tag}</Badge>
                                     ))}
                                   </div>
                                 )}

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { apiClient, Post, Comment, Project } from "@/lib/api";
+import { getTagClassName } from "@/lib/tag-colors";
 
 export default function ForumPostPage() {
   const params = useParams();
@@ -134,9 +135,9 @@ export default function ForumPostPage() {
             <p className="text-zinc-300 whitespace-pre-wrap leading-relaxed">{post.content}</p>
             
             {post.tags.length > 0 && (
-              <div className="flex gap-2 mt-6">
+              <div className="flex flex-wrap gap-2.5 mt-6">
                 {post.tags.map(tag => (
-                  <Badge key={tag} variant="secondary" className="text-xs">
+                  <Badge key={tag} className={`text-xs py-1 px-3 ${getTagClassName(tag)}`}>
                     {tag}
                   </Badge>
                 ))}

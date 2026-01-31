@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { apiClient, Project, Post } from "@/lib/api";
+import { getTagClassName } from "@/lib/tag-colors";
 
 interface ProjectWithPosts extends Project {
   posts: Post[];
@@ -115,11 +116,13 @@ export default function ForumPage() {
                                 {post.tags.length > 0 && (
                                   <>
                                     <span>•</span>
-                                    {post.tags.slice(0, 3).map(tag => (
-                                      <Badge key={tag} variant="secondary" className="text-xs py-0">
-                                        {tag}
-                                      </Badge>
-                                    ))}
+                                    <div className="flex gap-2">
+                                      {post.tags.slice(0, 3).map(tag => (
+                                        <Badge key={tag} className={`text-xs py-0.5 px-2 ${getTagClassName(tag)}`}>
+                                          {tag}
+                                        </Badge>
+                                      ))}
+                                    </div>
                                   </>
                                 )}
                               </div>

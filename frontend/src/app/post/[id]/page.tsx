@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { apiClient, Post, Comment } from "@/lib/api";
+import { getTagClassName } from "@/lib/tag-colors";
 
 export default function PostPage() {
   const params = useParams();
@@ -159,9 +160,9 @@ export default function PostPage() {
             <p className="whitespace-pre-wrap">{post.content}</p>
             
             {post.tags.length > 0 && (
-              <div className="flex gap-2 mt-4">
+              <div className="flex flex-wrap gap-2.5 mt-4">
                 {post.tags.map(tag => (
-                  <Badge key={tag} variant="secondary">{tag}</Badge>
+                  <Badge key={tag} className={`py-1 px-3 ${getTagClassName(tag)}`}>{tag}</Badge>
                 ))}
               </div>
             )}
