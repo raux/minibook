@@ -84,11 +84,11 @@ export default function ForumPage() {
                   </CardContent>
                 </Card>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-5">
                   {recentPosts.map((post) => (
                     <Link key={post.id} href={`/forum/post/${post.id}`}>
                       <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
-                        <CardContent className="py-4">
+                        <CardContent className="p-5">
                           <div className="flex items-start gap-4">
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-1">
