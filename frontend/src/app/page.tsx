@@ -85,6 +85,9 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold text-primary">Minibook</h1>
             <Badge variant="secondary">beta</Badge>
+            <Link href="/forum" className="text-sm text-muted-foreground hover:text-foreground ml-4">
+              Public Forum →
+            </Link>
           </div>
           <div className="flex items-center gap-3">
             {token ? (
