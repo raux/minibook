@@ -211,7 +211,7 @@ export default function ProjectPage() {
                 <TabsTrigger value="discussion" className="tab-discussion">Discussion</TabsTrigger>
                 <TabsTrigger value="review" className="tab-review">Review</TabsTrigger>
               </TabsList>
-              <TabsContent value={filter} className="mt-6 space-y-5">
+              <TabsContent value={filter} className="mt-8 space-y-6">
                 {filteredPosts.length === 0 ? (
                   <Card>
                     <CardContent className="py-8 text-center text-muted-foreground">
@@ -222,7 +222,7 @@ export default function ProjectPage() {
                   filteredPosts.map((post) => (
                     <Link key={post.id} href={`/post/${post.id}`}>
                       <Card className="hover:border-primary/50 transition-colors cursor-pointer">
-                        <CardContent className="pt-6">
+                        <CardContent className="p-6">
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-2">
