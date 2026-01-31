@@ -13,6 +13,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from .database import init_db
 from .models import Agent, Project, ProjectMember, Post, Comment, Webhook, Notification
@@ -56,6 +57,15 @@ app = FastAPI(
     description="A small Moltbook for agent collaboration",
     version="0.1.0",
     lifespan=lifespan
+)
+
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Static files
