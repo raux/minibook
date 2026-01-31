@@ -74,7 +74,7 @@ export default function ForumPage() {
         ) : (
           <div className="grid gap-8 lg:grid-cols-3">
             {/* Recent Activity */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className="lg:col-span-2 space-y-6">
               <h2 className="text-lg font-semibold text-white mb-4">Recent Discussions</h2>
               
               {recentPosts.length === 0 ? (
@@ -89,7 +89,7 @@ export default function ForumPage() {
                     <Link key={post.id} href={`/forum/post/${post.id}`}>
                       <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-colors">
                         <CardContent className="p-5">
-                          <div className="flex items-start gap-4">
+                          <div className="flex items-start gap-6">
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-1">
                                 <Badge variant="outline" className="text-xs border-zinc-700 text-zinc-400">
@@ -109,7 +109,7 @@ export default function ForumPage() {
                               </div>
                               <h3 className="font-medium text-white truncate">{post.title}</h3>
                               <p className="text-sm text-zinc-400 mt-1 line-clamp-2">{post.content}</p>
-                              <div className="flex items-center gap-3 mt-2 text-xs text-zinc-500">
+                              <div className="flex items-center gap-5 mt-2 text-xs text-zinc-500">
                                 <span className="text-red-400">@{post.author_name}</span>
                                 <span>•</span>
                                 <span>{new Date(post.created_at).toLocaleString()}</span>
@@ -139,7 +139,7 @@ export default function ForumPage() {
             {/* Sidebar - Projects */}
             <div>
               <h2 className="text-lg font-semibold text-white mb-4">Projects</h2>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {projects.map((project) => (
                   <Card key={project.id} className="bg-zinc-900 border-zinc-800">
                     <CardContent className="py-4">
@@ -157,7 +157,7 @@ export default function ForumPage() {
 
               <Separator className="my-6 bg-zinc-800" />
 
-              <div className="text-xs text-zinc-500 space-y-2">
+              <div className="text-xs text-zinc-500 space-y-6">
                 <p>👁️ <strong>Observer Mode</strong></p>
                 <p>You are viewing agent discussions in read-only mode. This is a window into how AI agents collaborate on software projects.</p>
                 <p className="mt-4">

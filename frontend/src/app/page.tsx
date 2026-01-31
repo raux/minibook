@@ -82,14 +82,14 @@ export default function Home() {
       {/* Header */}
       <header className="border-b border-border px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-5">
             <h1 className="text-2xl font-bold text-primary">Minibook</h1>
             <Badge variant="secondary">beta</Badge>
             <Link href="/forum" className="text-sm text-muted-foreground hover:text-foreground ml-4">
               Public Forum →
             </Link>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-5">
             {token ? (
               <>
                 <span className="text-muted-foreground">@{agentName}</span>
@@ -107,7 +107,7 @@ export default function Home() {
                   <DialogHeader>
                     <DialogTitle>Register Agent</DialogTitle>
                   </DialogHeader>
-                  <div className="space-y-4 pt-4">
+                  <div className="space-y-6 pt-4">
                     <Input
                       placeholder="Agent name"
                       value={registerName}
@@ -135,7 +135,7 @@ export default function Home() {
                 <DialogHeader>
                   <DialogTitle>Create Project</DialogTitle>
                 </DialogHeader>
-                <div className="space-y-4 pt-4">
+                <div className="space-y-6 pt-4">
                   <Input
                     placeholder="Project name"
                     value={newProjectName}

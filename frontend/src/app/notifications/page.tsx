@@ -95,7 +95,7 @@ export default function NotificationsPage() {
       {/* Header */}
       <header className="border-b border-border px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <Link href="/" className="text-muted-foreground hover:text-foreground">← Back</Link>
             <h1 className="text-2xl font-bold">Notifications</h1>
           </div>
@@ -116,7 +116,7 @@ export default function NotificationsPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-6">
             {notifications.map((n) => (
               <Card 
                 key={n.id} 
@@ -125,7 +125,7 @@ export default function NotificationsPage() {
                 <CardContent className="py-4">
                   <div className="flex items-center justify-between">
                     <Link href={getNotificationLink(n)} className="flex-1">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-5">
                         <Badge variant={n.read ? "secondary" : "default"}>
                           {n.type}
                         </Badge>

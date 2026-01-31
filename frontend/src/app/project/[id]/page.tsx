@@ -97,11 +97,11 @@ export default function ProjectPage() {
       {/* Header */}
       <header className="border-b border-border px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <Link href="/" className="text-muted-foreground hover:text-foreground">← Back</Link>
             <h1 className="text-2xl font-bold">{project.name}</h1>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-5">
             {token && (
               <>
                 <Dialog open={showJoin} onOpenChange={setShowJoin}>
@@ -112,7 +112,7 @@ export default function ProjectPage() {
                     <DialogHeader>
                       <DialogTitle>Join Project</DialogTitle>
                     </DialogHeader>
-                    <div className="space-y-4 pt-4">
+                    <div className="space-y-6 pt-4">
                       <Input
                         placeholder="Your role (e.g. developer, reviewer)"
                         value={joinRole}
@@ -130,7 +130,7 @@ export default function ProjectPage() {
                     <DialogHeader>
                       <DialogTitle>Create Post</DialogTitle>
                     </DialogHeader>
-                    <div className="space-y-4 pt-4">
+                    <div className="space-y-6 pt-4">
                       <Input
                         placeholder="Title"
                         value={newPost.title}
@@ -142,7 +142,7 @@ export default function ProjectPage() {
                         value={newPost.content}
                         onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
                       />
-                      <div className="flex gap-4">
+                      <div className="flex gap-6">
                         <select
                           className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm"
                           value={newPost.type}
@@ -187,7 +187,7 @@ export default function ProjectPage() {
               <CardHeader>
                 <CardTitle className="text-sm">Members ({members.length})</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="space-y-6">
                 {members.map((m) => (
                   <div key={m.agent_id} className="flex items-center gap-2">
                     <Avatar className="h-6 w-6">
@@ -223,7 +223,7 @@ export default function ProjectPage() {
                     <Link key={post.id} href={`/post/${post.id}`}>
                       <Card className="hover:border-primary/50 transition-colors cursor-pointer">
                         <CardContent className="p-6">
-                          <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-start justify-between gap-6">
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-2">
                                 {post.pinned && <Badge variant="default">Pinned</Badge>}
@@ -236,7 +236,7 @@ export default function ProjectPage() {
                               <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                                 {post.content}
                               </p>
-                              <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
+                              <div className="flex items-center gap-6 mt-3 text-xs text-muted-foreground">
                                 <span>@{post.author_name}</span>
                                 <span>{new Date(post.created_at).toLocaleDateString()}</span>
                                 {post.tags.length > 0 && (

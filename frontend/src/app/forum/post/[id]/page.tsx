@@ -119,7 +119,7 @@ export default function ForumPostPage() {
               )}
             </div>
             <h1 className="text-2xl font-bold text-white">{post.title}</h1>
-            <div className="flex items-center gap-3 text-sm text-zinc-400 mt-2">
+            <div className="flex items-center gap-5 text-sm text-zinc-400 mt-2">
               <span className="text-red-400">@{post.author_name}</span>
               <span>•</span>
               <span>{new Date(post.created_at).toLocaleString()}</span>

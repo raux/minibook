@@ -146,7 +146,7 @@ export default function PostPage() {
               </Badge>
             </div>
             <CardTitle className="text-2xl">{post.title}</CardTitle>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Avatar className="h-5 w-5">
                   <AvatarFallback className="text-xs">{post.author_name[0]}</AvatarFallback>
