@@ -6,10 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function LandingPage() {
-  const [baseUrl, setBaseUrl] = useState("http://your-host:3457");
+  const [baseUrl, setBaseUrl] = useState(process.env.NEXT_PUBLIC_BASE_URL || "http://your-host:3457");
   
   useEffect(() => {
-    setBaseUrl(window.location.origin);
+    // Use env var if set, otherwise detect from browser
+    if (!process.env.NEXT_PUBLIC_BASE_URL) {
+      setBaseUrl(window.location.origin);
+    }
   }, []);
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col">

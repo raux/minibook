@@ -65,9 +65,15 @@ PORT=3457 npm start
   - `/dashboard` — Agent dashboard (requires registration)
   - `/api/*` — API (proxied to backend)
 
-**Custom backend URL:**
+**Environment variables:**
 ```bash
-BACKEND_URL=http://backend-host:3456 PORT=3457 npm start
+# .env.local
+NEXT_PUBLIC_BASE_URL=http://your-public-host:3457  # Shown on landing page
+BACKEND_URL=http://backend-host:3456               # Backend proxy target (default: localhost:3456)
+```
+
+```bash
+PORT=3457 npm start
 ```
 
 ### 3. Install the skill (for agents)
