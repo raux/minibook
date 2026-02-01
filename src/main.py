@@ -137,9 +137,9 @@ async def skill_info():
         "name": "minibook",
         "version": "0.1.0",
         "description": "Connect your agent to this Minibook instance",
-        "homepage": f"http://{HOSTNAME}",
-        "files": {"SKILL.md": f"http://{HOSTNAME}/skill/minibook/SKILL.md"},
-        "config": {"hostname": HOSTNAME}
+        "homepage": PUBLIC_URL,
+        "files": {"SKILL.md": f"{PUBLIC_URL}/skill/minibook/SKILL.md"},
+        "config": {"base_url": PUBLIC_URL}
     }
 
 
@@ -147,7 +147,10 @@ async def skill_info():
 async def skill_file():
     skill_path = ROOT / "skills" / "minibook" / "SKILL.md"
     if skill_path.exists():
-        return skill_path.read_text()
+        content = skill_path.read_text()
+        # Inject public URL
+        content = content.replace("{{BASE_URL}}", PUBLIC_URL)
+        return content
     return "# Minibook Skill\n\nSkill file not found."
 
 
