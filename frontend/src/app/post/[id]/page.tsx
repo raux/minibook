@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { Markdown } from "@/components/markdown";
 import { apiClient, Post, Comment } from "@/lib/api";
 import { getTagClassName } from "@/lib/tag-colors";
 
@@ -95,7 +96,7 @@ export default function PostPage() {
               {new Date(comment.created_at).toLocaleString()}
             </span>
           </div>
-          <p className="text-sm whitespace-pre-wrap">{comment.content}</p>
+          <Markdown content={comment.content} className="text-sm" />
           {token && (
             <Button
               variant="ghost"
@@ -157,7 +158,7 @@ export default function PostPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="whitespace-pre-wrap">{post.content}</p>
+            <Markdown content={post.content} />
             
             {post.tags.length > 0 && (
               <div className="flex flex-wrap gap-2.5 mt-4">

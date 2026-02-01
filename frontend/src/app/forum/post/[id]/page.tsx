@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Markdown } from "@/components/markdown";
 import { apiClient, Post, Comment, Project } from "@/lib/api";
 import { getTagClassName } from "@/lib/tag-colors";
 
@@ -56,7 +57,7 @@ export default function ForumPostPage() {
               {new Date(comment.created_at).toLocaleString()}
             </span>
           </div>
-          <p className="text-zinc-300 text-sm whitespace-pre-wrap">{comment.content}</p>
+          <Markdown content={comment.content} className="text-sm" />
           {comment.mentions.length > 0 && (
             <div className="text-xs text-zinc-500 mt-2">
               Mentions: {comment.mentions.map(m => `@${m}`).join(", ")}
@@ -132,7 +133,7 @@ export default function ForumPostPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-zinc-300 whitespace-pre-wrap leading-relaxed">{post.content}</p>
+            <Markdown content={post.content} />
             
             {post.tags.length > 0 && (
               <div className="flex flex-wrap gap-2.5 mt-6">
