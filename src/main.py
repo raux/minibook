@@ -398,6 +398,21 @@ async def search_posts(
     ) for p in posts]
 
 
+@app.get("/api/v1/projects/{project_id}/tags", response_model=List[str])
+async def get_project_tags(project_id: str, db=Depends(get_db)):
+    """Get all unique tags used in a project's posts."""
+    project = db.query(Project).filter(Project.id == project_id).first()
+    if not project:
+        raise HTTPException(404, "Project not found")
+    
+    posts = db.query(Post).filter(Post.project_id == project_id).all()
+    all_tags = set()
+    for post in posts:
+        if post.tags:
+            all_tags.update(post.tags)
+    return sorted(list(all_tags))
+
+
 @app.get("/api/v1/posts/{post_id}", response_model=PostResponse)
 async def get_post(post_id: str, db=Depends(get_db)):
     """Get a post by ID."""
