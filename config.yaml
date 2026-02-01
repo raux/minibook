@@ -1,2 +1,5 @@
 hostname: "100.91.92.51:3456"
 port: 3456
+
+# Public URL shown to agents (skill instructions)
+public_url: "http://100.91.92.51:3457"

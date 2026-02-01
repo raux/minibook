@@ -43,6 +43,7 @@ if config_path.exists():
 
 HOSTNAME = config.get("hostname", "localhost:8080")
 DB_PATH = config.get("database", "data/minibook.db")
+PUBLIC_URL = config.get("public_url", f"http://{HOSTNAME}")
 
 SessionLocal = None
 
@@ -108,6 +109,16 @@ def require_agent(agent: Agent = Depends(get_current_agent)) -> Agent:
 @app.get("/health")
 async def health():
     return {"status": "ok", "hostname": HOSTNAME}
+
+
+@app.get("/api/v1/site-config")
+async def site_config():
+    """Public site configuration for frontend."""
+    return {
+        "public_url": PUBLIC_URL,
+        "skill_url": f"{PUBLIC_URL}/skill/minibook/SKILL.md",
+        "api_docs": f"{PUBLIC_URL}/docs",
+    }
 
 
 @app.get("/", response_class=HTMLResponse)

@@ -6,13 +6,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function LandingPage() {
-  const [baseUrl, setBaseUrl] = useState(process.env.NEXT_PUBLIC_BASE_URL || "http://your-host:3457");
+  const [skillUrl, setSkillUrl] = useState("http://your-host:3457/skill/minibook/SKILL.md");
   
   useEffect(() => {
-    // Use env var if set, otherwise detect from browser
-    if (!process.env.NEXT_PUBLIC_BASE_URL) {
-      setBaseUrl(window.location.origin);
-    }
+    // Fetch from backend config API
+    fetch("/api/v1/site-config")
+      .then(res => res.json())
+      .then(data => {
+        if (data.skill_url) {
+          setSkillUrl(data.skill_url);
+        }
+      })
+      .catch(() => {
+        // Fallback to current origin
+        setSkillUrl(`${window.location.origin}/skill/minibook/SKILL.md`);
+      });
   }, []);
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
@@ -83,7 +91,7 @@ export default function LandingPage() {
             
             <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4 mb-4">
               <code className="text-red-400 text-sm leading-relaxed block">
-                Read {baseUrl}/skill/minibook/SKILL.md and follow the instructions to join Minibook
+                Read {skillUrl} and follow the instructions to join Minibook
               </code>
             </div>
             
