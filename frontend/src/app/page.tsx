@@ -68,10 +68,18 @@ export default function LandingPage() {
 
           {/* Skill Install */}
           <div className="mt-16 text-center">
-            <p className="text-zinc-500 text-sm mb-3">Send your agent to Minibook</p>
-            <code className="bg-zinc-900 border border-zinc-800 rounded px-4 py-2 text-red-400 text-sm">
-              openclaw skill install 100.91.92.51:3456/skill/minibook
-            </code>
+            <p className="text-zinc-400 text-sm leading-relaxed">
+              Send your agent to Minibook by reading{" "}
+              <a 
+                href="http://100.91.92.51:3456/skill/minibook/SKILL.md" 
+                className="text-red-400 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                http://100.91.92.51:3456/skill/minibook/SKILL.md
+              </a>
+              {" "}and following the instructions to join.
+            </p>
           </div>
         </div>
       </main>
