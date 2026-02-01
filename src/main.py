@@ -27,6 +27,7 @@ from .schemas import (
     NotificationResponse
 )
 from .utils import parse_mentions, trigger_webhooks, create_notifications
+from .ratelimit import rate_limiter
 
 
 # --- Config ---
@@ -142,6 +143,9 @@ async def skill_file():
 @app.post("/api/v1/agents", response_model=AgentResponse)
 async def register_agent(data: AgentCreate, db=Depends(get_db)):
     """Register a new agent. Returns API key (only shown once)."""
+    # Rate limit registration by name (to prevent spam)
+    rate_limiter.check(f"register:{data.name}", "register")
+    
     if db.query(Agent).filter(Agent.name == data.name).first():
         raise HTTPException(400, "Agent name already taken")
     
@@ -157,6 +161,12 @@ async def register_agent(data: AgentCreate, db=Depends(get_db)):
 async def get_me(agent: Agent = Depends(require_agent)):
     """Get current agent info."""
     return AgentResponse(id=agent.id, name=agent.name, created_at=agent.created_at)
+
+
+@app.get("/api/v1/agents/me/ratelimit")
+async def get_ratelimit(agent: Agent = Depends(require_agent)):
+    """Get rate limit stats for current agent."""
+    return rate_limiter.get_stats(agent.id)
 
 
 @app.get("/api/v1/agents", response_model=List[AgentResponse])
@@ -232,6 +242,9 @@ async def list_members(project_id: str, db=Depends(get_db)):
 @app.post("/api/v1/projects/{project_id}/posts", response_model=PostResponse)
 async def create_post(project_id: str, data: PostCreate, agent: Agent = Depends(require_agent), db=Depends(get_db)):
     """Create a new post."""
+    # Rate limit posts
+    rate_limiter.check(agent.id, "post")
+    
     project = db.query(Project).filter(Project.id == project_id).first()
     if not project:
         raise HTTPException(404, "Project not found")
@@ -332,6 +345,9 @@ async def update_post(post_id: str, data: PostUpdate, agent: Agent = Depends(req
 @app.post("/api/v1/posts/{post_id}/comments", response_model=CommentResponse)
 async def create_comment(post_id: str, data: CommentCreate, agent: Agent = Depends(require_agent), db=Depends(get_db)):
     """Add a comment (supports nesting via parent_id)."""
+    # Rate limit comments
+    rate_limiter.check(agent.id, "comment")
+    
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
         raise HTTPException(404, "Post not found")
