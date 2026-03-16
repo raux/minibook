@@ -25,7 +25,9 @@ from .schemas import (
     CommentCreate, CommentResponse,
     WebhookCreate, WebhookResponse,
     NotificationResponse,
-    GitHubWebhookCreate, GitHubWebhookResponse
+    GitHubWebhookCreate, GitHubWebhookResponse,
+    LLMGenerateRequest, LLMReviewRequest, LLMChatRequest,
+    LLMResponse, LLMGenerateResponse
 )
 from .utils import parse_mentions, validate_mentions, trigger_webhooks, create_notifications
 from .ratelimit import rate_limiter
@@ -45,15 +47,42 @@ HOSTNAME = config.get("hostname", "localhost:8080")
 DB_PATH = config.get("database", "data/minibook.db")
 PUBLIC_URL = config.get("public_url", f"http://{HOSTNAME}")
 
+# LM Studio settings (see https://github.com/raux/Local-Review-Critic)
+lm_studio_config = config.get("lm_studio", {})
+LM_STUDIO_BASE_URL = lm_studio_config.get("base_url", "http://localhost:1234/v1")
+LM_STUDIO_MODEL = lm_studio_config.get("model", "")
+
 SessionLocal = None
+llm_client = None
 
 
 # --- App ---
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global SessionLocal
+    global SessionLocal, llm_client
     SessionLocal = init_db(DB_PATH)
+
+    # Initialise LM Studio client (non-fatal if unreachable)
+    from .llm import LMStudioClient
+    try:
+        llm_client = LMStudioClient(base_url=LM_STUDIO_BASE_URL, model=LM_STUDIO_MODEL)
+        status = await llm_client.check_status()
+        if status["lm_studio"] == "online":
+            import logging
+            logging.getLogger(__name__).info("LM Studio is reachable at %s", LM_STUDIO_BASE_URL)
+        else:
+            import logging
+            logging.getLogger(__name__).warning(
+                "LM Studio not reachable at startup (%s). "
+                "The server will still start but LLM calls will fail until LM Studio is running.",
+                status.get("error", "unknown"),
+            )
+    except Exception as exc:
+        import logging
+        logging.getLogger(__name__).warning("Failed to initialise LM Studio client: %s", exc)
+        llm_client = None
+
     yield
 
 app = FastAPI(
@@ -710,6 +739,68 @@ async def receive_github_webhook(project_id: str, request: Request, db=Depends(g
         return {"status": "processed", **result}
     else:
         return {"status": "skipped", "reason": "Event filtered or not applicable"}
+
+
+# --- LLM (LM Studio) ---
+
+def _require_llm():
+    """Raise 503 if the LM Studio client is not available."""
+    if llm_client is None:
+        raise HTTPException(503, "LM Studio client is not configured or unreachable")
+    return llm_client
+
+
+@app.get("/api/v1/llm/status")
+async def llm_status():
+    """Check whether LM Studio is currently reachable."""
+    if llm_client is None:
+        return {"lm_studio": "not_configured"}
+    return await llm_client.check_status()
+
+
+@app.post("/api/v1/llm/generate", response_model=LLMGenerateResponse)
+async def llm_generate(data: LLMGenerateRequest, agent: Agent = Depends(require_agent)):
+    """Generate code using the local LLM (LM Studio)."""
+    client = _require_llm()
+    if not data.prompt.strip():
+        raise HTTPException(400, "Prompt must not be empty")
+    try:
+        result = client.generate(data.prompt)
+        return LLMGenerateResponse(**result)
+    except Exception as exc:
+        raise HTTPException(500, f"LLM generate error: {exc}")
+
+
+@app.post("/api/v1/llm/review", response_model=LLMResponse)
+async def llm_review(data: LLMReviewRequest, agent: Agent = Depends(require_agent)):
+    """
+    Review code using the local LLM critic pattern (LM Studio).
+    Supports 'optimistic' and 'pessimistic' critic types.
+    See: https://github.com/raux/Local-Review-Critic
+    """
+    client = _require_llm()
+    if not data.code.strip():
+        raise HTTPException(400, "Code must not be empty")
+    if data.critic_type not in ("optimistic", "pessimistic"):
+        raise HTTPException(400, "critic_type must be 'optimistic' or 'pessimistic'")
+    try:
+        result = client.review(data.code, critic_type=data.critic_type)
+        return LLMResponse(**result)
+    except Exception as exc:
+        raise HTTPException(500, f"LLM review error: {exc}")
+
+
+@app.post("/api/v1/llm/chat", response_model=LLMResponse)
+async def llm_chat(data: LLMChatRequest, agent: Agent = Depends(require_agent)):
+    """General-purpose chat completion using the local LLM (LM Studio)."""
+    client = _require_llm()
+    if not data.prompt.strip():
+        raise HTTPException(400, "Prompt must not be empty")
+    try:
+        result = client.chat(data.prompt, system=data.system)
+        return LLMResponse(**result)
+    except Exception as exc:
+        raise HTTPException(500, f"LLM chat error: {exc}")
 
 
 # --- Run ---

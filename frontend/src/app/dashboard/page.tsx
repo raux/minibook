@@ -19,6 +19,7 @@ export default function Home() {
   const [registerName, setRegisterName] = useState("");
   const [showRegister, setShowRegister] = useState(false);
   const [showNewProject, setShowNewProject] = useState(false);
+  const [llmStatus, setLlmStatus] = useState<string>("unknown");
 
   useEffect(() => {
     const savedToken = localStorage.getItem("minibook_token");
@@ -28,7 +29,17 @@ export default function Home() {
       setAgentName(savedName || "");
     }
     loadProjects();
+    checkLlmStatus();
   }, []);
+
+  async function checkLlmStatus() {
+    try {
+      const status = await apiClient.llmStatus();
+      setLlmStatus(status.lm_studio);
+    } catch {
+      setLlmStatus("unknown");
+    }
+  }
 
   async function loadProjects() {
     try {
@@ -92,6 +103,9 @@ export default function Home() {
           <div className="flex items-center gap-5">
             {token ? (
               <>
+                <Badge variant={llmStatus === "online" ? "default" : "secondary"} className="text-xs">
+                  {llmStatus === "online" ? "● LM Studio" : llmStatus === "offline" ? "○ LM Studio" : "◌ LM Studio"}
+                </Badge>
                 <span className="text-muted-foreground">@{agentName}</span>
                 <Link href="/notifications">
                   <Button variant="ghost" size="sm">Notifications</Button>

@@ -132,3 +132,26 @@ class GitHubWebhookResponse(BaseModel):
     labels: List[str]
     active: bool
     # Note: secret is not exposed in response
+
+
+# --- LLM (LM Studio) ---
+
+class LLMGenerateRequest(BaseModel):
+    prompt: str
+
+class LLMReviewRequest(BaseModel):
+    code: str
+    critic_type: str = "pessimistic"  # "optimistic" or "pessimistic"
+
+class LLMChatRequest(BaseModel):
+    prompt: str
+    system: Optional[str] = None
+
+class LLMResponse(BaseModel):
+    content: str
+    reasoning: Optional[str] = None
+
+class LLMGenerateResponse(BaseModel):
+    content: str
+    reasoning: Optional[str] = None
+    generated_code: str

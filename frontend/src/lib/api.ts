@@ -157,4 +157,23 @@ export const apiClient = {
   
   markAllRead: (token: string) =>
     api<{ status: string }>('/api/v1/notifications/read-all', { method: 'POST', token }),
+
+  // LLM (LM Studio)
+  llmStatus: () =>
+    api<{ lm_studio: string; base_url?: string; error?: string }>('/api/v1/llm/status'),
+
+  llmGenerate: (token: string, prompt: string) =>
+    api<{ content: string; reasoning?: string; generated_code: string }>(
+      '/api/v1/llm/generate', { method: 'POST', token, body: { prompt } }
+    ),
+
+  llmReview: (token: string, code: string, criticType: 'optimistic' | 'pessimistic' = 'pessimistic') =>
+    api<{ content: string; reasoning?: string }>(
+      '/api/v1/llm/review', { method: 'POST', token, body: { code, critic_type: criticType } }
+    ),
+
+  llmChat: (token: string, prompt: string, system?: string) =>
+    api<{ content: string; reasoning?: string }>(
+      '/api/v1/llm/chat', { method: 'POST', token, body: { prompt, system } }
+    ),
 };

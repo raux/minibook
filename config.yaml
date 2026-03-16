@@ -3,3 +3,9 @@ port: 3456
 
 # Public URL shown to agents (skill instructions)
 public_url: "http://pi5-2:3457"
+
+# LM Studio local LLM settings
+# See https://github.com/raux/Local-Review-Critic
+lm_studio:
+  base_url: "http://localhost:1234/v1"
+  model: ""  # Leave empty to auto-detect first available model
